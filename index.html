@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project Profit Calculator: what did this project really earn you?</title>
+<meta name="description" content="Free calculator for freelancers and consultants. Enter price, hours and costs to see real profit, margin and effective hourly rate.">
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#12263f;--mute:#5b6b7f;--line:#d9e0e8;--brand:#12263f;--accent:#0f8f7e;--good:#0f8f7e;--warn:#b7791f;--bad:#b83a3a;--track:#e6ebf1;color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a2b;--card:#142338;--ink:#e8eef5;--mute:#9db0c4;--line:#27405c;--brand:#0a1422;--accent:#34c5af;--good:#34c5af;--warn:#e0b04a;--bad:#ef7676;--track:#22364f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1a2b;--card:#142338;--ink:#e8eef5;--mute:#9db0c4;--line:#27405c;--brand:#0a1422;--accent:#34c5af;--good:#34c5af;--warn:#e0b04a;--bad:#ef7676;--track:#22364f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Avenir Next","Segoe UI",system-ui,sans-serif}
+header{background:var(--brand);color:#fff;padding:28px 20px 30px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.15;margin:0 0 8px;letter-spacing:-.02em}
+header p{margin:0;max-width:34em;color:#c5d3e2}
+main{padding:20px}
+.grid{display:grid;gap:16px}
+@media(min-width:760px){.grid{grid-template-columns:1fr 1.1fr;align-items:start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h2{font-size:1.05rem;margin:0 0 14px}
+label{display:block;font-weight:600;font-size:.92rem;margin:0 0 4px}
+.hint{font-weight:400;color:var(--mute)}
+.f{margin-bottom:14px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:11px 12px;min-height:46px}
+input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{font-size:clamp(2.6rem,11vw,3.8rem);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:1rem;font-weight:500;color:var(--mute);letter-spacing:0}
+.verdict{font-weight:700;margin:6px 0 14px}
+.gauge{position:relative;height:12px;border-radius:7px;background:var(--track);margin:6px 0 4px}
+.gauge i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--good);transition:width .25s}
+.gauge b{position:absolute;top:-5px;bottom:-5px;left:66.66%;width:2px;background:var(--ink)}
+.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mute);margin-bottom:18px}
+dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:10px 14px}
+dt{color:var(--mute)}dd{margin:0;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.cta{margin-top:16px;background:var(--brand);color:#fff;border-radius:14px;padding:22px}
+.cta h2{margin:0 0 6px;font-size:1.2rem}
+.cta p{margin:0 0 14px;color:#c5d3e2}
+.btn{display:inline-block;background:var(--accent);color:#06241f;font-weight:700;text-decoration:none;padding:13px 20px;border-radius:10px}
+.btn:hover{filter:brightness(1.08)}
+.note{color:var(--mute);font-size:.85rem;margin:16px 0 0}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>What did this project really earn you?</h1>
+<p>Enter the price, your hours and your costs. You will see real profit, margin and your effective hourly rate in seconds.</p>
+</div></header>
+<main><div class="wrap">
+<div class="grid">
+<section class="card" aria-labelledby="in-h">
+<h2 id="in-h">Your project</h2>
+<div class="f"><label for="cur">Currency symbol</label>
+<select id="cur"><option>$</option><option>€</option><option>£</option></select></div>
+<div class="row">
+<div class="f"><label for="price">Project price</label><input id="price" type="number" inputmode="decimal" min="0" step="any" value="3000"></div>
+<div class="f"><label for="hours">Hours worked</label><input id="hours" type="number" inputmode="decimal" min="0" step="any" value="60"></div>
+</div>
+<div class="row">
+<div class="f"><label for="cost">Your cost per hour <span class="hint">what an hour of your time costs you</span></label><input id="cost" type="number" inputmode="decimal" min="0" step="any" value="25"></div>
+<div class="f"><label for="direct">Direct costs <span class="hint">software, assets, fees</span></label><input id="direct" type="number" inputmode="decimal" min="0" step="any" value="150"></div>
+</div>
+<div class="f"><label for="target">Your target hourly rate</label><input id="target" type="number" inputmode="decimal" min="0.01" step="any" value="40"></div>
+</section>
+
+<section class="card" aria-labelledby="out-h" aria-live="polite">
+<h2 id="out-h">Your result</h2>
+<div class="big"><span id="ehr">0</span> <small>per hour, effective</small></div>
+<div class="verdict" id="hv"></div>
+<div class="gauge" role="img" aria-label="Effective hourly rate compared with your target"><i id="bar"></i><b></b></div>
+<div class="scale"><span>0</span><span>Your target</span><span>1.5× target</span></div>
+<dl>
+<dt>Real profit</dt><dd id="profit"></dd>
+<dt>Profit margin</dt><dd id="margin"></dd>
+<dt>Margin level</dt><dd id="ml"></dd>
+<dt>Labor cost</dt><dd id="labor"></dd>
+</dl>
+<hr>
+<dl>
+<dt>Price needed to hit your target rate</dt><dd id="p1"></dd>
+<dt>Price needed for a 30% margin</dt><dd id="p2"></dd>
+</dl>
+</section>
+</div>
+
+<section class="cta">
+<h2>Tracking more than one project?</h2>
+<p>ProfitTrack Enterprise brings projects, payments, forecasting and reports into one Excel workbook, using this same profit logic. Standard .xlsx, no macros. Individual license $49, Business license $99.</p>
+<a class="btn" href="https://motivator0338.gumroad.com/l/ProfitTrackEnterpriseV254" target="_blank" rel="noopener">See the workbook on Gumroad</a>
+</section>
+<p class="note">Estimates for planning only, not financial advice. Nothing you type is stored or sent anywhere; the numbers stay in your browser.</p>
+</div></main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var ids=["price","hours","cost","direct","target","cur"];
+function n(i){var raw=$(i).value.trim();if(raw==="")return null;var v=Number(raw);return isFinite(v)&&v>=0?v:null}
+function money(v){var s=$("cur").value,a=Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});return (v<0?"-":"")+s+a}
+function calc(){
+var required=["price","hours","cost","direct","target"];
+var vals={},missing=[];
+required.forEach(function(i){vals[i]=n(i);if(vals[i]===null)missing.push(i)});
+if(missing.length){
+$("ehr").textContent="—";
+$("hv").textContent="Complete the required fields to calculate your result.";
+$("hv").style.color="var(--mute)";
+$("bar").style.width="0%";$("bar").style.background="var(--mute)";
+["profit","margin","ml","labor","p1","p2"].forEach(function(i){$(i).textContent="—"});
+return;
+}
+var price=vals.price,hours=vals.hours,cost=vals.cost,direct=vals.direct,target=vals.target;
+if(target<=0){
+$("ehr").textContent="—";
+$("hv").textContent="Target hourly rate must be greater than zero.";
+$("hv").style.color="var(--mute)";
+$("bar").style.width="0%";
+["profit","margin","ml","labor","p1","p2"].forEach(function(i){$(i).textContent="—"});
+return;
+}
+var labor=hours*cost,profit=price-direct-labor,margin=price>0?profit/price:0;
+var ehr=hours>0?(price-direct)/hours:0,ratio=ehr/target;
+var hv,col;
+if(hours===0){hv="Enter your hours to see your hourly rate.";col="var(--mute)"}
+else if(ratio>=1){hv="At or above your target rate.";col="var(--good)"}
+else if(ratio>=0.6){hv="Below your target rate, but not far off.";col="var(--warn)"}
+else{hv="Well below your target rate.";col="var(--bad)"}
+var ml=profit<0?"Loss":margin>=0.3?"High":margin>=0.15?"Healthy":margin>=0.05?"Thin":"Critical";
+$("ehr").textContent=money(ehr,2);
+$("hv").textContent=hv;$("hv").style.color=col;
+$("bar").style.width=Math.max(0,Math.min(ratio/1.5,1))*100+"%";$("bar").style.background=col;
+$("profit").textContent=hours>0?money(profit):"—";
+$("margin").textContent=hours>0?(margin*100).toFixed(1)+"%":"—";
+$("ml").textContent=hours>0?ml:"—";
+$("labor").textContent=money(labor);
+$("p1").textContent=hours>0?money(direct+hours*target):"—";
+$("p2").textContent=hours>0?money((direct+labor)/0.7):"—";
+}
+ids.forEach(function(i){$(i).addEventListener("input",calc)});
+calc();
+})();
+</script>
+</body>
+</html>
