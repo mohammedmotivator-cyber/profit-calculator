@@ -21,7 +21,7 @@ main{padding:20px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
 .card h2{font-size:1.05rem;margin:0 0 14px}
 label{display:block;font-weight:600;font-size:.92rem;margin:0 0 4px}
-.hint{font-weight:400;color:var(--mute)}
+.hint{display:block;font-weight:400;font-size:.82rem;color:var(--mute)}
 .f{margin-bottom:14px}
 input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:11px 12px;min-height:46px}
 input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
@@ -60,7 +60,7 @@ hr{border:0;border-top:1px solid var(--line);margin:16px 0}
 <div class="f"><label for="hours">Hours worked</label><input id="hours" type="number" inputmode="decimal" min="0" step="any" value="60"></div>
 </div>
 <div class="row">
-<div class="f"><label for="cost">Your cost per hour <span class="hint">what an hour of your time costs you</span></label><input id="cost" type="number" inputmode="decimal" min="0" step="any" value="25"></div>
+<div class="f"><label for="cost">Your cost per hour <span class="hint">your time, per hour</span></label><input id="cost" type="number" inputmode="decimal" min="0" step="any" value="25"></div>
 <div class="f"><label for="direct">Direct costs <span class="hint">software, assets, fees</span></label><input id="direct" type="number" inputmode="decimal" min="0" step="any" value="150"></div>
 </div>
 <div class="f"><label for="target">Your target hourly rate</label><input id="target" type="number" inputmode="decimal" min="0.01" step="any" value="40"></div>
@@ -98,7 +98,7 @@ hr{border:0;border-top:1px solid var(--line);margin:16px 0}
 var $=function(i){return document.getElementById(i)};
 var ids=["price","hours","cost","direct","target","cur"];
 function n(i){var raw=$(i).value.trim();if(raw==="")return null;var v=Number(raw);return isFinite(v)&&v>=0?v:null}
-function money(v){var s=$("cur").value,a=Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:0});return (v<0?"-":"")+s+a}
+function money(v,d){d=d||0;var s=$("cur").value,a=Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});return (v<0?"-":"")+s+a}
 function calc(){
 var required=["price","hours","cost","direct","target"];
 var vals={},missing=[];
